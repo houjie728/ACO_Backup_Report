@@ -132,10 +132,10 @@ while ($dbhost = shift(@ACOserver)) {
 					$servername = $result->[$i][0];
 					$backupstatus = $result->[$i][1];
 					if ($backupstatus == 1){
-#						$buffer .= "<tr class=\"trFinish\">\n";
-#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
-#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">Finished</td>\n";
-#						$buffer .= "</tr>\n";
+						$buffer .= "<tr class=\"trFinish\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">Finished</td>\n";
+						$buffer .= "</tr>\n";
 						$finishTotal++;
 					} elsif ($backupstatus == 2){
 						$buffer .= "<tr bgcolor=\"#F3F3F3\">\n";
@@ -150,10 +150,10 @@ while ($dbhost = shift(@ACOserver)) {
 						$buffer .= "</tr>\n";
 						$failedTotal++;
 					} elsif ($backupstatus == 4){
-#						$buffer .= "<tr class=\"trIncomplete\">\n";
-#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
-#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">Incomplete</td>\n";
-#						$buffer .= "</tr>\n";
+						$buffer .= "<tr class=\"trIncomplete\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">Incomplete</td>\n";
+						$buffer .= "</tr>\n";
 						$incompleteTotal++;
 					} elsif ($backupstatus == 5 or $backupstatus == 6 or $backupstatus > 8 ){
 						$buffer .= "<tr bgcolor=\"#F3F3F3\">\n";
