@@ -33,8 +33,8 @@ my $from = 'noreply@jabil.com';
 my $datestring = strftime '%Y/%m/%d', localtime();
 my $subject = "Scheduled report: - V5 Details - ACO Daily Backup Status Summary Report - $datestring \n";
 # SQL Query Time Setting
-my $startTime = "CONVERT(varchar,getdate()-4,112) +\' 13:29:59\'";
-my $endTime = "CONVERT(varchar,getdate()-3,112) +\' 13:29:59\'";
+my $startTime = "CONVERT(varchar,getdate()-1,112) +\' 13:29:59\'";
+my $endTime = "CONVERT(varchar,getdate(),112) +\' 13:29:59\'";
 my $CONDITION = "";
 my $smtp = '';
 my $buffer = '';
@@ -106,11 +106,8 @@ while ($dbhost = shift(@ACOserver)) {
 			}
 			
 			$dbh=DBI->connect("DBI:ODBC:$DSN") or die "couldn't open database: DBI->errstr";
-			 ### SQL Query
-			if ($dbhost eq "hacfile01"){
-				$query = "select nodename,status from dbo.asnode where exectime > getdate()-1";
-			} else {
-				$query = "select a.NodeName, b.[Status],a.TimeDT from 
+			### SQL Query
+			$query = "select a.NodeName, b.[Status],a.TimeDT from 
 								(select NodeName, max(distinct ExecTime) As TimeDT from dbo.asnode 
 								where  ExecTime between $startTime and $endTime 
 								$CONDITION								
@@ -119,7 +116,6 @@ while ($dbhost = shift(@ACOserver)) {
 								a.NodeName=b.NOdeName and 
 								a.TimeDT=b.ExecTime 
 								Order by a.NodeName";
-			}
 			
 			$sth=$dbh->prepare($query) or die "Couldn't prepare statement: ". $dbh->errstr;
 			$sth->execute() or die "Execute error: " . $dbh->errstr;						
@@ -188,8 +184,8 @@ while ($dbhost = shift(@ACOserver)) {
 			
 			if ($siteTotal == 0) {
 				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
-				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost</td>\n";
-				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>No Data</b></td>\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\">$dbhost</td>\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\"><b>No Data - please verify manually</b></td>\n";
 				$buffer .= "</tr>\n";
 			} else {
 #				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
@@ -230,7 +226,7 @@ $buffer .="</body>\n</html>\n";
 $smtp = Net::SMTP->new($SMTPSERVER) or die print "Couldn't connect to SMTP Server $SMTPSERVER Error $smtp - $!\n";
 $smtp->mail($from);
 $smtp->to($to1);
-#$smtp->cc($to3,$to5);
+#$smtp->cc($to2,$to3,$to4,$to5);
 
 my $msg = MIME::Lite->new(
         From    => $from,
