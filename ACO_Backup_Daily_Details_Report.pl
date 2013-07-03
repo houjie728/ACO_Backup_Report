@@ -185,10 +185,18 @@ while ($dbhost = shift(@ACOserver)) {
 					$allTotal++;
 					$siteTotal++;
 			}
-			$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
-			$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost</td>\n";
-			$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>$siteTotal</b></td>\n";
-			$buffer .= "</tr>\n";
+
+			if ($siteTotal == 0) {
+				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost</td>\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>No Data</b></td>\n";
+				$buffer .= "</tr>\n";
+			} else {
+				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost</td>\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>$siteTotal</b></td>\n";
+				$buffer .= "</tr>\n";
+			}
 			
 			$buffer .= "</tr>\n";		
 }
