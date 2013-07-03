@@ -28,31 +28,15 @@ my $to3 = 'leo_yan@jabil.com';
 my $to4 = 'summy_pu@jabil.com';
 my $to5 = 'tang_tang@jabil.com';
 my $SMTPSERVER = "corimc04.jabil.com";
-my $from = 'noreply@jabil.com';
+my $from = 'ACO_Daily_Backup@jabil.com';
 # Date 86400 means one day
 my $datestring = strftime '%Y/%m/%d', localtime();
 my $subject = "Scheduled report: ACO Daily Backup Status Summary Report - $datestring \n";
 # SQL Query Time Setting
 my $startTime = "CONVERT(varchar,getdate()-1,112) +\' 13:29:59\'";
 my $endTime = "CONVERT(varchar,getdate(),112) +\' 13:29:59\'";
-my $CONDITION = "";
-my $smtp = '';
-my $buffer = '';
-my $result = '';
-my $servername = '';
-my $backupstatus = ''; 
-my $DSN = '';
-my $dbh = '';
-my $query = '';
-my $sth = '';
-my $i = '';
-my $dbhost ='';
-my $finishTotal = 0;
-my $incompleteTotal = 0;
-my $failedTotal = 0;
-my $otherTotal = 0;
-my $allTotal = 0;
-my $siteTotal = "";
+my ($CONDITION,$smtp,$buffer,$result,$servername,$backupstatus,$DSN,$dbh,$query,$sth,$i,$dbhost,$siteTotal);
+my ($finishTotal,$incompleteTotal,$failedTotal,$otherTotal,$allTotal) = (0,0,0,0,0);
 
 $buffer .="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<style TYPE=\"text/css\">\n<!-- body {color: #000000;} table {width:85%;padding: 0;margin: 0;} td {border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;  } h3 {font: bold 11px Verdana, Arial, Helvetica, sans-serif; } th{font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;}  .trAll { background: #F3F3F3;  } .trFail { background: #F4CCCC; } .trIncomplete { background: #FFF2CC; } .trFinish { background: #B6D7A8; } -->\n</style>\n</head>\n";
 $buffer .="<body>\n";
