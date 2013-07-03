@@ -3,11 +3,11 @@
 # File Name:         ACO_Backup_Daily_Report.pl
 # Description:       ACO Daily Backup Status Report
 #
-# Modified By:    Date:                Description
-# Jerry Hou       07/2013           Initial Development
+# Modified By:       Jerry Hou 
+#
 # Change Log:
-# - modified SQL query
-# - added into Git for version control
+# 20130703 - modified SQL query, fixed EOM Daily job mix issue 
+# 20130702 - added into Git for version control 
 # ------------------------------------------------------
 
 # DBI allows use of the database connection
