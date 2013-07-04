@@ -6,6 +6,8 @@
 # Modified By:       Jerry Hou 
 #
 # Change Log:
+# 20130704 - changed start end time setting
+# 20130703 - deployed on SHATEST
 # 20130703 - modified SQL query, fixed EOM Daily job mix issue 
 # 20130702 - added into Git for version control 
 # ------------------------------------------------------
@@ -33,15 +35,17 @@ my $from = 'ACO_Daily_Backup@jabil.com';
 my $datestring = strftime '%Y/%m/%d', localtime();
 my $subject = "Scheduled report: ACO Daily Backup Status Summary Report - $datestring \n";
 # SQL Query Time Setting
-my $startTime = "CONVERT(varchar,getdate()-1,112) +\' 13:29:59\'";
-my $endTime = "CONVERT(varchar,getdate(),112) +\' 13:29:59\'";
+my $startDate = strftime '%Y%m%d', localtime(time-86400);
+my $endDate = strftime '%Y%m%d', localtime();
+my $startTime = $startDate." 13:29:59";
+my $endTime = $endDate." 13:30:00";
 my ($CONDITION,$smtp,$buffer,$result,$servername,$backupstatus,$DSN,$dbh,$query,$sth,$i,$dbhost,$siteTotal);
 my ($finishTotal,$incompleteTotal,$failedTotal,$otherTotal,$allTotal) = (0,0,0,0,0);
 
 $buffer .="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<style TYPE=\"text/css\">\n<!-- body {color: #000000;} table {width:85%;padding: 0;margin: 0;} td {border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;  } h3 {font: bold 11px Verdana, Arial, Helvetica, sans-serif; } th{font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;}  .trAll { background: #F3F3F3;  } .trFail { background: #F4CCCC; } .trIncomplete { background: #FFF2CC; } .trFinish { background: #B6D7A8; } -->\n</style>\n</head>\n";
 $buffer .="<body>\n";
-$buffer .= "<i>* This script only check the latest status of daily backup job! If shows \"no data\", please help verify manually!</i>";
-$buffer .= "<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">Daily Backup Status - $datestring</h3>\n";
+$buffer .= "<i>* This script only check the latest status of daily backup job! If shows \"no data\", please help verify manually!</i>\n";
+$buffer .= "<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">Daily Backup Status: $startDate - $endDate</h3>\n";
 $buffer .= "<table width=\"85%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
 $buffer .= "<tr>\n";
 $buffer .= "<th style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">Server</th>\n";
@@ -93,7 +97,7 @@ while ($dbhost = shift(@ACOserver)) {
 			### SQL Query
 			$query = "select a.NodeName, b.[Status],a.TimeDT from 
 								(select NodeName, max(distinct ExecTime) As TimeDT from dbo.asnode 
-								where  ExecTime between $startTime and $endTime 
+								where  ExecTime between '$startTime' and '$endTime' 
 								$CONDITION								
 								Group by NodeName) 
 								a JOIN dbo.asnode b ON 
@@ -165,7 +169,7 @@ while ($dbhost = shift(@ACOserver)) {
 					$allTotal++;
 					$siteTotal++;
 			}
-			
+
 			if ($siteTotal == 0) {
 				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
 				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\">$dbhost</td>\n";
@@ -177,7 +181,6 @@ while ($dbhost = shift(@ACOserver)) {
 #				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>$siteTotal</b></td>\n";
 #				$buffer .= "</tr>\n";
 			}
-						
 			
 			$buffer .= "</tr>\n";		
 }
@@ -186,7 +189,7 @@ my $successTotal = $finishTotal+$incompleteTotal;
 my $successRate = sprintf "%.2f \n",($finishTotal+$incompleteTotal)/$allTotal*100;
 
 $buffer .="</table><br>\n";
-$buffer .="<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">Status Summary - $datestring</h3>\n";
+$buffer .="<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">Status Summary: $startDate - $endDate</h3>\n";
 $buffer .="<table width=\"85%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
 <tr align=\"center\">
 <th style = \"font: bold 9px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: center; padding: 6px 6px 6px 12px; background: #4F81BD;\">Total</th>
