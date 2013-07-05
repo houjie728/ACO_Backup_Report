@@ -218,7 +218,7 @@ $smtp->to($to1);
 my $msg = MIME::Lite->new(
         From    => $from,
         To      => $to1,
-        #Cc	=> [$to2,$to3,$to4,$to5], 
+        Cc	=> [$to2,$to3,$to4,$to5], 
         Subject => $subject,
         Type    =>'multipart/related',
         )or print "Error creating MIME body: $!\n";
