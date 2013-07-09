@@ -37,7 +37,7 @@ my $subject = "Scheduled report: ACO Daily Backup Status Summary Report - $dates
 # SQL Query Time Setting
 my $startDate = strftime '%Y%m%d', localtime(time-86400);
 my $endDate = strftime '%Y%m%d', localtime();
-my $startTime = $startDate." 13:29:59";
+my $startTime = $startDate." 00:00:01";
 my $endTime = $endDate." 13:30:00";
 my ($CONDITION,$smtp,$buffer,$result,$servername,$backupstatus,$DSN,$dbh,$query,$sth,$i,$dbhost,$siteTotal);
 my ($finishTotal,$incompleteTotal,$failedTotal,$otherTotal,$allTotal) = (0,0,0,0,0);
