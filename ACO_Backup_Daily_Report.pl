@@ -6,9 +6,10 @@
 # Modified By:       Jerry Hou 
 #
 # Change Log:
+# 20130710 - finished testing, works well
 # 20130704 - changed start end time setting
 # 20130703 - deployed on SHATEST
-# 20130703 - modified SQL query, fixed EOM Daily job mix issue 
+# 20130703 - modified SQL query, fixed EOM/Daily job mix issue 
 # 20130702 - added into Git for version control 
 # ------------------------------------------------------
 
