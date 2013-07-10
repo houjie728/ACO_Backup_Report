@@ -200,8 +200,8 @@ $buffer .="<table width=\"85%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"
 </tr>
 <tr align=\"center\">
 <td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>$allTotal</b></td>
-<td bgcolor=\"#B6D7A8\">$successTotal</td>
-<td bgcolor=\"#F4CCCC\"><b>$failedTotal</b></td>
+<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#B6D7A8\">$successTotal</td>
+<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#F4CCCC\"><b>$failedTotal</b></td>
 <td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$otherTotal</td>
 <td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$successRate %</td>
 </tr>
