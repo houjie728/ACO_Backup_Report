@@ -25,7 +25,7 @@ use MIME::Lite;
 @ACOserver = ("shabus01","wuxbus01","wxibus10","slfbus10","txqbus10","gotbus01","gotbus02","hacfile01","hcmprt01","sgpbus01","rjnbus01","yanbus01","szhbus01");
 
 # recipients  
-my $to1 = 'Jerry_hou@jabil.com';
+my $to1 = '_f7736@jabil.com';
 my $to2 = 'jm_liu@jabil.com';
 my $to3 = 'leo_yan@jabil.com';
 my $to4 = 'summy_pu@jabil.com';
