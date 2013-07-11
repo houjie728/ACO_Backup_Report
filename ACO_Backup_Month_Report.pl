@@ -156,9 +156,6 @@ while ($a++ < $reportDays) {
 			$successRate = sprintf "%.2f \n",($finishTotal+$incompleteTotal)/$allTotal*100;
 		} else { $successRate = "---"; }
 		
-		#$buffer .="</table><br>\n";
-		
-		
 		$buffer .="<tr align=\"center\">
 		<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$startDate</td>
 		<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>$allTotal</b></td>
