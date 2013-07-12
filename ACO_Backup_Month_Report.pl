@@ -36,7 +36,7 @@ my $from = 'ACO_Daily_Backup@jabil.com';
 my ($CONDITION,$smtp,$buffer,$result,$servername,$backupstatus,$DSN,$dbh,$query,$sth,$i,$dbhost,$siteTotal,$successTotal,$successRate,$startDate,$endDate,$startTime,$endTime);
 my ($finishTotal,$incompleteTotal,$failedTotal,$otherTotal,$allTotal,$a,$b,$c) = (0,0,0,0,0,0,0,0);
 # generate a daily backup job status report for last ### days
-my $reportDays = 30; 
+my $reportDays = 40; 
 my $subject = "Scheduled report: ACO Backup Status Summary Report - Last $reportDays days \n";
 $buffer .="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<style TYPE=\"text/css\">\n<!-- body {color: #000000;} table {width:85%;padding: 0;margin: 0;} td {border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;  } h3 {font: bold 11px Verdana, Arial, Helvetica, sans-serif; } th{font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;}  .trAll { background: #F3F3F3;  } .trFail { background: #F4CCCC; } .trIncomplete { background: #FFF2CC; } .trFinish { background: #B6D7A8; } -->\n</style>\n</head>\n";
 $buffer .="<body>\n";
