@@ -64,7 +64,7 @@ if ($month eq "01" or $month eq "07"){
 }
 
 # recipients  
-my $to1 = 'Jerry_hou@jabil.com';
+my $to1 = '_f7736@jabil.com';
 my $SMTPSERVER = "corimc04.jabil.com";
 my $from = 'ACO_Daily_Backup@jabil.com';
 
