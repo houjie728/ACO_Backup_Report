@@ -19,7 +19,7 @@ use Net::SMTP;
 use MIME::Lite;
 
 ####### Variables ########
-my ($SERVER_onduty,$BACKUP_onduty,$COMPLIANCE_onduty,$TICKET_onduty);
+my ($SERVER_onduty,$BACKUP_onduty,$COMPLIANCE_onduty,$TICKET_onduty,$OnCall);
 
 my $ACOSE1 = 'tang_tang@jabil.com';
 my $ACOSE2 = 'jm_liu@jabil.com';
@@ -27,6 +27,8 @@ my $ACOSE3 = 'summy_pu@jabil.com';
 my $ACOSE4 = 'leo_yan@jabil.com';
 my $ACOSE5 = 'atul_gangwal@jabil.com';
 my $ACOSE6 = 'tai_nguyen@jabil.com';
+my $ACOManager2 = 'jerry_hou@jabil.com';
+my $ACOManager1 = 'senghoe_ong@jabil.com';
 
 # Focus on-duty SE
 my $YearMonth = strftime '%Y/%m', localtime();
@@ -34,33 +36,39 @@ my $month = strftime '%m', localtime();
 if ($month eq "01" or $month eq "07"){
 	 $SERVER_onduty = "$ACOSE1";
 	 $BACKUP_onduty = "$ACOSE4";
-	 $COMPLIANCE_onduty = "$ACOSE2; $ACOSE3";
-	 $TICKET_onduty = "$ACOSE5; $ACOSE6";
+	 $COMPLIANCE_onduty = "$ACOSE2<br>$ACOSE3";
+	 $TICKET_onduty = "$ACOSE5<br>$ACOSE6";
+	 $OnCall = "<b>Primary: $ACOSE6</b><br>Secondary: $ACOSE5<br>Manager: $ACOManager1";
 } elsif ($month eq "02" or $month eq "08") {
 	 $SERVER_onduty = "$ACOSE5";
 	 $BACKUP_onduty = "$ACOSE2";
-	 $COMPLIANCE_onduty = "$ACOSE1; $ACOSE6";
-	 $TICKET_onduty = "$ACOSE3; $ACOSE4";
+	 $COMPLIANCE_onduty = "$ACOSE1<br>$ACOSE6";
+	 $TICKET_onduty = "$ACOSE3<br>$ACOSE4";
+	 $OnCall = "<b>Primary: $ACOSE4</b><br>Secondary: $ACOSE3<br>Manager: $ACOManager2";
 } elsif ($month eq "03" or $month eq "09") {
 	 $SERVER_onduty = "$ACOSE3";
 	 $BACKUP_onduty = "$ACOSE6";
-	 $COMPLIANCE_onduty = "$ACOSE4; $ACOSE5";
-	 $TICKET_onduty = "$ACOSE1; $ACOSE2";
+	 $COMPLIANCE_onduty = "$ACOSE4<br>$ACOSE5";
+	 $TICKET_onduty = "$ACOSE1<br>$ACOSE2";
+	 $OnCall = "<b>Primary: $ACOSE1</b><br>Secondary: $ACOSE2<br>Manager: $ACOManager1";
 } elsif ($month eq "04" or $month eq "10") {
 	 $SERVER_onduty = "$ACOSE2";
 	 $BACKUP_onduty = "$ACOSE1";
-	 $COMPLIANCE_onduty = "$ACOSE3; $ACOSE6";
-	 $TICKET_onduty = "$ACOSE4; $ACOSE5";
+	 $COMPLIANCE_onduty = "$ACOSE3<br>$ACOSE6";
+	 $TICKET_onduty = "$ACOSE4<br>$ACOSE5";
+	 $OnCall = "<b>Primary: $ACOSE5</b><br>Secondary: $ACOSE4<br>Manager: $ACOManager2";
 }	elsif ($month eq "05" or $month eq "11") {
 	 $SERVER_onduty = "$ACOSE4";
 	 $BACKUP_onduty = "$ACOSE3";
-	 $COMPLIANCE_onduty = "$ACOSE1; $ACOSE5";
-	 $TICKET_onduty = "$ACOSE2; $ACOSE6";
+	 $COMPLIANCE_onduty = "$ACOSE1<br>$ACOSE5";
+	 $TICKET_onduty = "$ACOSE2<br>$ACOSE6";
+	 $OnCall = "<b>Primary: $ACOSE2</b><br>Secondary: $ACOSE6<br>Manager: $ACOManager1";
 }	elsif ($month eq "06" or $month eq "12") {
 	 $SERVER_onduty = "$ACOSE6";
 	 $BACKUP_onduty = "$ACOSE5";
-	 $COMPLIANCE_onduty = "$ACOSE2; $ACOSE4";
-	 $TICKET_onduty = "$ACOSE1; $ACOSE3";
+	 $COMPLIANCE_onduty = "$ACOSE2<br>$ACOSE4";
+	 $TICKET_onduty = "$ACOSE1<br>$ACOSE3";
+	 $OnCall = "<b>Primary: $ACOSE3</b><br>Secondary: $ACOSE1<br>Manager: $ACOManager2";
 }
 
 # recipients  
@@ -93,6 +101,10 @@ $buffer .="<tr align=\"center\">
 $buffer .="<tr align=\"center\">
 					<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px; background: #DBE5F1;\">Ticket Watch</td>
 					<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px; background: #DBE5F1;\">$TICKET_onduty</td>
+					</tr>";
+$buffer .="<tr align=\"center\">
+					<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px; background: #FFF2CC;\">On Call</td>
+					<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px; background: #FFF2CC;\">$OnCall</td>
 					</tr>";
 					
 $buffer .= "</table>";
