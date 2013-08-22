@@ -6,6 +6,7 @@
 # Modified By:       Jerry Hou 
 #
 # Change Log:
+# 20130821 - added as verify report to check daily & makeup job
 # 20130710 - finished testing, works well
 # 20130704 - changed start end time setting
 # 20130703 - deployed on SHATEST
