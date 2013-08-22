@@ -22,10 +22,10 @@ use Net::SMTP;
 use MIME::Lite;
 
 ####### Variables ########
-my ($CONDITION,$smtp,$buffer,$result,$servername,$backupstatus,$DSN,$dbh,$query,$sth,$i,$dbhost,$siteTotal,$onduty);
+my ($CONDITION,$smtp,$buffer,$result,$servername,$backupstatus,$DSN,$dbh,$query,$sth,$i,$dbhost,$dbhost1,$siteTotal,$onduty,$successTotal,$successRate);
 my ($finishTotal,$incompleteTotal,$failedTotal,$otherTotal,$allTotal) = (0,0,0,0,0);
 @ACOserver = ("shabus01","wuxbus01","wxibus10","slfbus10","txqbus10","gotbus01","gotbus02","hacfile01","hcmprt01","sgpbus01","rjnbus01","yanbus01","szhbus01");
-
+@ACOserver1 = ("shabus01","wuxbus01","wxibus10","slfbus10","txqbus10","gotbus01","gotbus02","hacfile01","hcmprt01","sgpbus01","rjnbus01","yanbus01","szhbus01");
 # Focus on-duty SE
 my $month = strftime '%m', localtime();
 if ($month eq "01" or $month eq "07"){
@@ -58,14 +58,16 @@ my $endTime = $endDate." 13:30:00";
 
 $buffer .="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<style TYPE=\"text/css\">\n<!-- body {color: #000000;} table {width:85%;padding: 0;margin: 0;} td {border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;  } h3 {font: bold 11px Verdana, Arial, Helvetica, sans-serif; } th{font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;}  .trAll { background: #F3F3F3;  } .trFail { background: #F4CCCC; } .trIncomplete { background: #FFF2CC; } .trFinish { background: #B6D7A8; } -->\n</style>\n</head>\n";
 $buffer .="<body>\n";
-$buffer .= "<i>* This script only check the latest status of daily backup job! If shows \"no data\", please help verify manually!</i>\n";
+$buffer .= "<i>* This script check the latest status of daily backup job & detailed daily backup 1st success rate! If shows \"no data\", please help verify manually!</i>\n";
 $buffer .= "<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">On-Duty SE:  $onduty</h3>\n";
+$buffer .= "<h2 style=\"font: bold 16px Verdana, Arial, Helvetica, sans-serif; color: #FF0000;\">Report 1: Final Backup Status (include: makeup jobs)</h2>\n";
 $buffer .= "<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">Daily Backup Status: $startDate - $endDate</h3>\n";
 $buffer .= "<table width=\"85%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
 $buffer .= "<tr>\n";
 $buffer .= "<th style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">Server</th>\n";
 $buffer .= "<th style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">Status</th>\n";
 $buffer .= "</tr>\n";
+
 
 while ($dbhost = shift(@ACOserver)) {  				
 			
@@ -77,32 +79,178 @@ while ($dbhost = shift(@ACOserver)) {
 			} else {
 				$DSN = "driver={SQL Server};Server=$dbhost;Database=asdb;UID=svcgdco_compliance;PWD=ImDqouGcmgmFI3I";
 			}
-	
+	    
+	    # CONDITION = exclude EOM backup jobs
 			if ($dbhost eq "shabus01"){
-				$CONDITION = "and jobno IN (8,7,9)";				
+				$CONDITION = "and jobno NOT IN (3,16)";				
 			} elsif ($dbhost eq "wuxbus01") {				
-				$CONDITION = "and jobno IN (4,5,8)";
+				$CONDITION = "and jobno NOT IN (6,7,18)";
 			} elsif ($dbhost eq "wxibus10") {			
-				$CONDITION = "and jobno IN (3,10)";
+				$CONDITION = "and jobno NOT IN (4,14)";
 			} elsif ($dbhost eq "slfbus10") {			
-				$CONDITION = "and jobno IN (2,14)";
+				$CONDITION = "and jobno NOT IN (3)";
 			} elsif ($dbhost eq "txqbus10") {				
-				$CONDITION = "and jobno IN (3,5,6,7,8)";
+				$CONDITION = "and jobno NOT IN (4,9,10,12,30)";
 			} elsif ($dbhost eq "gotbus01") {				
-				$CONDITION = "and jobno IN (3,4,5,6,7,8,9)";
+				$CONDITION = "and jobno NOT IN (10)";
 			} elsif ($dbhost eq "gotbus02") {				
-				$CONDITION = "and jobno IN (4,7,9,10,11,12,13)";
+				$CONDITION = "and jobno NOT IN (15)";
 			} elsif ($dbhost eq "hacfile01") {				
-				$CONDITION = "and jobno IN (5)";
+				$CONDITION = "";
 			} elsif ($dbhost eq "hcmprt01") {				
-				$CONDITION = "and jobno IN (2)";
+				$CONDITION = "and jobno NOT IN (3)";
 			} elsif ($dbhost eq "sgpbus01") {				
-				$CONDITION = "and jobno IN (4)";
+				$CONDITION = "and jobno NOT IN (3)";
 			} elsif ($dbhost eq "rjnbus01") {				
-				$CONDITION = "and jobno IN (6,7)";
+				$CONDITION = "and jobno NOT IN (3)";
 			} elsif ($dbhost eq "yanbus01") {				
-				$CONDITION = "and jobno IN (2)";
+				$CONDITION = "and jobno NOT IN (3)";
 			} elsif ($dbhost eq "szhbus01") {				
+				$CONDITION = "and jobno NOT IN (3,4)";
+			} else {
+				$CONDITION = "";
+			}
+			
+			$dbh=DBI->connect("DBI:ODBC:$DSN") or die "couldn't open database: DBI->errstr";
+			### SQL Query
+			$query = "select a.NodeName, b.[Status],a.TimeDT from 
+								(select NodeName, max(distinct ExecTime) As TimeDT from dbo.asnode 
+								where  ExecTime between '$startTime' and '$endTime'
+								and jobtype not like 7 								
+								$CONDITION
+								Group by NodeName) 
+								a JOIN dbo.asnode b ON 
+								a.NodeName=b.NOdeName and 
+								a.TimeDT=b.ExecTime 
+								Order by a.NodeName";
+			
+			$sth=$dbh->prepare($query) or die "Couldn't prepare statement: ". $dbh->errstr;
+			$sth->execute() or die "Execute error: " . $dbh->errstr;						
+			$result = $sth->fetchall_arrayref();
+			
+			$i = 0;
+			$buffer .= "<tr>\n";
+			
+			while ($result->[$i][0]) {	
+					$servername = $result->[$i][0];
+					$backupstatus = $result->[$i][1];
+					if ($backupstatus == 1){
+#						$buffer .= "<tr class=\"trFinish\">\n";
+#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">Finished</td>\n";
+#						$buffer .= "</tr>\n";
+						
+					} elsif ($backupstatus == 2){
+						$buffer .= "<tr bgcolor=\"#F3F3F3\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>Canceled</b></td>\n";
+						$buffer .= "</tr>\n";
+						
+					} elsif ($backupstatus == 3 or $backupstatus == 7){
+						$buffer .= "<tr bgcolor=\"#F4CCCC\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b> > Failed < </b></td>\n";
+						$buffer .= "</tr>\n";
+						
+					} elsif ($backupstatus == 4){
+#						$buffer .= "<tr class=\"trIncomplete\">\n";
+#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+#						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">Incomplete</td>\n";
+#						$buffer .= "</tr>\n";
+						
+					} elsif ($backupstatus == 5 or $backupstatus == 6 or $backupstatus > 8 ){
+						$buffer .= "<tr bgcolor=\"#F3F3F3\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>Unknown</b></td>\n";
+						$buffer .= "</tr>\n";
+						
+					}	elsif ($backupstatus == 8 ){
+						$buffer .= "<tr bgcolor=\"#F3F3F3\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>Not Attempted</b></td>\n";
+						$buffer .= "</tr>\n";
+						
+					} elsif ($backupstatus < 0){
+						$buffer .= "<tr bgcolor=\"#F3F3F3\">\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+						$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>Active</b></td>\n";
+						$buffer .= "</tr>\n";
+						
+					} else {
+					 	$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
+					 	$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$servername</td>\n";
+					 	$buffer .= "<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\"><b>Unknown</b></td>\n";
+					 	$buffer .= "</tr>\n";
+					 	
+					}
+						
+					$i++;
+					
+			}
+
+#			if ($siteTotal == 0) {
+#				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
+#				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\">$dbhost</td>\n";
+#				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\"><b>No Data - please verify manually</b></td>\n";
+#				$buffer .= "</tr>\n";
+#			} else {
+#				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
+#				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost</td>\n";
+#				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>$siteTotal</b></td>\n";
+#				$buffer .= "</tr>\n";
+#			}
+			
+			$buffer .= "</tr>\n";		
+}
+
+$buffer .="</table><br>\n";
+
+
+print "++++++ Report 2 ++++++ \n";	
+
+$buffer .= "<h2 style=\"font: bold 16px Verdana, Arial, Helvetica, sans-serif;color: #FF0000;\">Report 2: Detailed Backup Status (exclude: makeup jobs)</h2>\n";
+$buffer .= "<table width=\"85%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
+$buffer .= "<tr>\n";
+$buffer .= "<th style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">Server</th>\n";
+$buffer .= "<th style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">Status</th>\n";
+$buffer .= "</tr>\n";
+
+while ($dbhost1 = shift(@ACOserver1)) {  				
+			
+			print "--- $dbhost1 --- \n";			
+			$siteTotal = 0;
+			### DB Configure Info ###
+			if ($dbhost1 eq "szhbus01"){
+				$DSN = "driver={SQL Server};Server=$dbhost1\\arcserve_db;Database=asdb;svcgdco_compliance;ImDqouGcmgmFI3I";
+			} else {
+				$DSN = "driver={SQL Server};Server=$dbhost1;Database=asdb;UID=svcgdco_compliance;PWD=ImDqouGcmgmFI3I";
+			}
+	
+			if ($dbhost1 eq "shabus01"){
+				$CONDITION = "and jobno IN (8,7,9)";				
+			} elsif ($dbhost1 eq "wuxbus01") {				
+				$CONDITION = "and jobno IN (4,5,8)";
+			} elsif ($dbhost1 eq "wxibus10") {			
+				$CONDITION = "and jobno IN (3,10)";
+			} elsif ($dbhost1 eq "slfbus10") {			
+				$CONDITION = "and jobno IN (2,14)";
+			} elsif ($dbhost1 eq "txqbus10") {				
+				$CONDITION = "and jobno IN (3,5,6,7,8)";
+			} elsif ($dbhost1 eq "gotbus01") {				
+				$CONDITION = "and jobno IN (3,4,5,6,7,8,9)";
+			} elsif ($dbhost1 eq "gotbus02") {				
+				$CONDITION = "and jobno IN (4,7,9,10,11,12,13)";
+			} elsif ($dbhost1 eq "hacfile01") {				
+				$CONDITION = "and jobno IN (5)";
+			} elsif ($dbhost1 eq "hcmprt01") {				
+				$CONDITION = "and jobno IN (2)";
+			} elsif ($dbhost1 eq "sgpbus01") {				
+				$CONDITION = "and jobno IN (4)";
+			} elsif ($dbhost1 eq "rjnbus01") {				
+				$CONDITION = "and jobno IN (6,7)";
+			} elsif ($dbhost1 eq "yanbus01") {				
+				$CONDITION = "and jobno IN (2)";
+			} elsif ($dbhost1 eq "szhbus01") {				
 				$CONDITION = "and jobno IN (2,8)";
 			} else {
 				$CONDITION = "";
@@ -187,12 +335,12 @@ while ($dbhost = shift(@ACOserver)) {
 
 			if ($siteTotal == 0) {
 				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
-				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\">$dbhost</td>\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\">$dbhost1</td>\n";
 				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; border: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #FFF2CC;rowspan: 2; align: center;\"><b>No Data - please verify manually</b></td>\n";
 				$buffer .= "</tr>\n";
 			} else {
 				$buffer .= "<tr bgcolor=\"#f3f3f3\">\n";
-				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost</td>\n";
+				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\">$dbhost1</td>\n";
 				$buffer .= "<td style = \"font: bold 11px Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; border: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #4F81BD;rowspan: 2; align: center;\"><b>$siteTotal</b></td>\n";
 				$buffer .= "</tr>\n";
 			}
@@ -200,8 +348,8 @@ while ($dbhost = shift(@ACOserver)) {
 			$buffer .= "</tr>\n";		
 }
 
-my $successTotal = $finishTotal+$incompleteTotal;
-my $successRate = sprintf "%.2f \n",($finishTotal+$incompleteTotal)/$allTotal*100;
+$successTotal = $finishTotal+$incompleteTotal;
+$successRate = sprintf "%.2f \n",($finishTotal+$incompleteTotal)/$allTotal*100;
 
 $buffer .="</table><br>\n";
 $buffer .="<h3 style=\"font: bold 11px Verdana, Arial, Helvetica, sans-serif;\">Status Summary: $startDate - $endDate</h3>\n";
@@ -230,8 +378,9 @@ $buffer .="</body>\n</html>\n";
 ### Email Function ###
 $smtp = Net::SMTP->new($SMTPSERVER) or die print "Couldn't connect to SMTP Server $SMTPSERVER Error $smtp - $!\n";
 $smtp->mail($from);
-$smtp->to($onduty);
+#$smtp->to($onduty);
 #$smtp->cc($to2,$to3);
+$smtp->cc($to2);
 
 my $msg = MIME::Lite->new(
         From    => $from,
