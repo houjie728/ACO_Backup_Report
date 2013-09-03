@@ -176,7 +176,7 @@ while ($a++ < $reportDays) {
 		<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#F4CCCC\"><b>$failedTotal</b></td>
 		<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$otherTotal</td>";
 		
-		if ($successRate > 98) {
+		if ($successRate > 95) {
 			$buffer .="<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#B6D7A8\">$successRate %</td>";
 		} else {
 			$buffer .="<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#F4CCCC\">$successRate %</td>";
@@ -326,7 +326,7 @@ while ($a++ < $reportDays) {
 				$buffer .="<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\">$otherTotal</td>";
 		}
 		
-		if ($successRate > 98) {
+		if ($successRate > 95) {
 			$buffer .="<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#B6D7A8\">$successRate %</td>";
 		} else {
 			$buffer .="<td style = \"border: 1px solid #C1DAD7; font-size:11px; padding: 6px 6px 6px 12px;\" bgcolor=\"#F4CCCC\">$successRate %</td>";
